@@ -1,0 +1,36 @@
+#-----------------------------------------------------------------------------
+# This file is part of the 'SPACE SMURF RFSOC'. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the 'SPACE SMURF RFSOC', including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
+# contained in the LICENSE.txt file.
+#-----------------------------------------------------------------------------
+
+GitBase: ..
+
+TopRoguePackage: simple_kria_kv260_example
+
+RoguePackages:
+  - submodules/surf/python
+  - python     
+
+# RogueConfig:
+  # - ../software/config
+
+# RogueScripts:
+  # - ../software/scripts/devGui
+
+Targets:
+  SimpleKriaKv260Example:
+    ImageDir: targets/SimpleKriaKv260Example/images
+    Extensions:
+      - petalinux.tar.gz
+Releases:
+  all:
+    Primary: True
+    Targets:
+      - SimpleKriaKv260Example
+    Types:
+      - Rogue
