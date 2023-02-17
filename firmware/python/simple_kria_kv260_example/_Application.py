@@ -10,6 +10,40 @@
 
 import pyrogue as pr
 
+import surf.protocols.ssi as ssi
+
 class Application(pr.Device):
     def __init__(self,**kwargs):
         super().__init__(**kwargs)
+
+        self.add(ssi.SsiPrbsTx(
+            offset  = 0x0_0000,
+            expand  = True,
+        ))
+
+        self.add(ssi.SsiPrbsRx(
+            offset  = 0x1_0000,
+            expand  = True,
+        ))
+
+        self.add(pr.RemoteVariable(
+            name         = 'HdaInputBus',
+            offset       = 0x2_0000,
+            bitSize      = 20,
+            mode         = 'RO',
+            pollInterval = 1,
+        ))
+
+        self.add(pr.RemoteVariable(
+            name         = 'HdaOutputBus',
+            offset       = 0x2_0100,
+            bitSize      = 20,
+            mode         = 'RW',
+        ))
+
+        self.add(pr.RemoteVariable(
+            name         = 'HdaTriBus',
+            offset       = 0x2_0104,
+            bitSize      = 20,
+            mode         = 'RW',
+        ))
