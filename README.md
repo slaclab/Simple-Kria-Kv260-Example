@@ -16,9 +16,9 @@ $ git clone --recursive git@github.com:slaclab/Simple-Kria-Kv260-Example
 
 <!--- ######################################################## -->
 
-# How to generate the RFSoC .BIT and .XSA files
+# How to generate the SOC .BIT and .XSA files
 
-1) Setup Vivado Environment and Licensing
+1) Setup Xilinx PATH and licensing (if on SLAC AFS network) else requires Vivado install and licensing on your local machine
 
 ```bash
 $ source Simple-Kria-Kv260-Example/firmware/setup_env_slac.sh
@@ -52,9 +52,9 @@ drwxr-xr-x 2 ruckman re 2.0K Feb  4 21:15 .
 
 # How to build Petalinux images
 
-1) Generate the .bit and .xsa files (refer to `How to generate the RFSoC .BIT and .XSA files` instructions).
+1) Generate the .bit and .xsa files (refer to `How to generate the SOC .BIT and .XSA files` instructions).
 
-2) Setup Xilinx licensing and petalinux software
+2) Setup Xilinx licensing and petalinux software (if on SLAC AFS network) else requires Xilinx & petalinux install on your local machine
 
 ```bash
 $ source Simple-Kria-Kv260-Example/firmware/setup_env_slac.sh
@@ -80,13 +80,13 @@ https://xilinx-wiki.atlassian.net/wiki/x/EYMfAQ
 This typically will include system.bit, BOOT.BIN, image.ub, and boot.scr.  Here's an example:
 
 ```bash
-sudo mount /dev/sde1 /u1/boot
-sudo cp /u1/$USER/build/petalinux/SimpleKriaKv260Example/images/linux/system.bit /u1/boot/.
-sudo cp /u1/$USER/build/petalinux/SimpleKriaKv260Example/images/linux/BOOT.BIN   /u1/boot/.
-sudo cp /u1/$USER/build/petalinux/SimpleKriaKv260Example/images/linux/image.ub   /u1/boot/.
-sudo cp /u1/$USER/build/petalinux/SimpleKriaKv260Example/images/linux/boot.scr   /u1/boot/.
-sudo sync /u1/boot/
-sudo umount /u1/boot
+sudo mount /dev/sde1 boot
+sudo cp Simple-Kria-Kv260-Example/firmware/build/petalinux/SimpleKriaKv260Example/images/linux/system.bit boot/.
+sudo cp Simple-Kria-Kv260-Example/firmware/build/petalinux/SimpleKriaKv260Example/images/linux/BOOT.BIN   boot/.
+sudo cp Simple-Kria-Kv260-Example/firmwarebuild/petalinux/SimpleKriaKv260Example/images/linux/image.ub    boot/.
+sudo cp Simple-Kria-Kv260-Example/firmware/build/petalinux/SimpleKriaKv260Example/images/linux/boot.scr   boot/.
+sudo sync boot/
+sudo umount boot
 ```
 
 3) Power down the KV260 board
@@ -134,17 +134,19 @@ ssh root@10.0.0.10 '/bin/sync; /sbin/reboot'
 
 # How to run the Rogue GUI
 
-1) Go to software directory and setup the rogue environment
+- Assumes the DHCP assigned IP address is 10.0.0.10
+
+1) Setup the rogue environment (if on SLAC AFS network) else install rogue (recommend Anaconda method) on your local machine
+
+```bash
+$ source Simple-Kria-Kv260-Example/software/setup_env_slac.sh
+```
+
+2) Go to software directory and lauch the GUI:
 
 ```bash
 $ cd Simple-Kria-Kv260-Example/software
-$ source setup_env_slac.sh
-```
-
-2) Lauch the GUI:
-
-```bash
-$ python scripts/devGui.py
+$ python scripts/devGui.py --ip 10.0.0.10
 ```
 
 <!--- ######################################################## -->
