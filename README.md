@@ -79,7 +79,10 @@ https://xilinx-wiki.atlassian.net/wiki/x/EYMfAQ
 2) Copy For the boot images, simply copy the files to the FAT partition.
 This typically will include system.bit, BOOT.BIN, image.ub, and boot.scr.  Here's an example:
 
+Note: Assumes SD memory FAT32 is `/dev/sde1` in instructions below
+
 ```bash
+sudo mkdir -p boot
 sudo mount /dev/sde1 boot
 sudo cp Simple-Kria-Kv260-Example/firmware/build/petalinux/SimpleKriaKv260Example/images/linux/system.bit boot/.
 sudo cp Simple-Kria-Kv260-Example/firmware/build/petalinux/SimpleKriaKv260Example/images/linux/BOOT.BIN   boot/.
