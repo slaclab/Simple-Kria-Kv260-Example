@@ -62,7 +62,7 @@ jobs:
       - name: Download And Extract
         env:
           GH_API: https://api.github.com
-          GH_REPO: https://api.github.com/repos/slaclab/snl-trans-FES
+          GH_REPO: https://api.github.com/repos/slaclab/Simple-Kria-Kv260-Example
           AUTH: "Authorization: token ${{ secrets.GH_TOKEN }}"
           WGET_ARGS: "--content-disposition --auth-no-challenge --no-cookie"
           CURL_ARGS: "-LJO#"
@@ -71,7 +71,7 @@ jobs:
         run: |
           mkdir ${HOME}/download
           cd ${HOME}/download
-          GH_TAGS=https://api.github.com/repos/slaclab/snl-trans-FES/releases/tags/${GITHUB_REF#refs/tags/}
+          GH_TAGS=https://api.github.com/repos/slaclab/Simple-Kria-Kv260-Example/releases/tags/${GITHUB_REF#refs/tags/}
           echo GH_TAGS = $GH_TAGS
           echo curl -sH "$AUTH" $GH_TAGS
           response=$(curl -sH "$AUTH" $GH_TAGS)
