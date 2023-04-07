@@ -13,22 +13,23 @@ GitBase: ..
 TopRoguePackage: simple_kria_kv260_example
 
 RoguePackages:
-  - submodules/surf/python
-  - python     
+  - python
 
-# RogueConfig:
-  # - ../software/config
+CondaDependencies:
+  - surf
 
-# RogueScripts:
-  # - ../software/scripts/devGui
+RogueScripts:
+  - ../software/scripts/kv260Gui
 
 Targets:
   SimpleKriaKv260Example:
     ImageDir: targets/SimpleKriaKv260Example/images
     Extensions:
-      - petalinux.tar.gz
+      - tar.gz
+      - bit
+
 Releases:
-  all:
+  KiraKv260:
     Primary: True
     Targets:
       - SimpleKriaKv260Example
