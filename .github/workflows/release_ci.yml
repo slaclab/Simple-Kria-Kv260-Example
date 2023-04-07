@@ -57,15 +57,32 @@ jobs:
           echo ::set-output name=token::$CONDA_UPLOAD_TOKEN_TAG
           echo ::set-output name=url::${URL_BASE}/${GITHUB_REF#refs/tags/}/rogue_${GITHUB_REF#refs/tags/}.zip
           echo ::set-output name=tag::${GITHUB_REF#refs/tags/}
+          echo ::set-output name=file::rogue_${GITHUB_REF#refs/tags/}.zip
 
       - name: Download And Extract
         env:
-          DOWNLOAD_URL: ${{ steps.get_image_info.outputs.url }}
+          GH_API: https://api.github.com
+          GH_REPO: https://api.github.com/repos/slaclab/snl-trans-FES
+          AUTH: "Authorization: token ${{ secrets.GH_TOKEN }}"
+          WGET_ARGS: "--content-disposition --auth-no-challenge --no-cookie"
+          CURL_ARGS: "-LJO#"
+          FILENAME: ${{ steps.get_image_info.outputs.file }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           mkdir ${HOME}/download
           cd ${HOME}/download
-          wget -O file.zip $DOWNLOAD_URL
-          unzip file.zip
+          GH_TAGS=https://api.github.com/repos/slaclab/snl-trans-FES/releases/tags/${GITHUB_REF#refs/tags/}
+          echo GH_TAGS = $GH_TAGS
+          echo curl -sH "$AUTH" $GH_TAGS
+          response=$(curl -sH "$AUTH" $GH_TAGS)
+          echo $response
+          eval $(echo "$response" | grep -C3 "name.:.\+${FILENAME}" | grep -w id | tr : = | tr -cd '[[:alnum:]]=')
+          echo $id
+          GH_ASSET="$GH_REPO/releases/assets/$id"
+          echo $GH_ASSET
+          echo curl $CURL_ARGS -H "Authorization: token ${GH_TOKEN}" -H 'Accept: application/octet-stream' "$GH_ASSET"
+          curl $CURL_ARGS -H "Authorization: token ${GH_TOKEN}" -H 'Accept: application/octet-stream' "$GH_ASSET"
+          unzip $FILENAME
 
       - name: Build And Upload
         run: |
