@@ -17,6 +17,7 @@ RoguePackages:
 
 CondaDependencies:
   - surf
+  - axi_soc_ultra_plus_core
 
 RogueScripts:
   - ../software/scripts/kv260Gui
