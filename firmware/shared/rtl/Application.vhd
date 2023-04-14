@@ -29,7 +29,7 @@ entity Application is
       AXIL_BASE_ADDR_G : slv(31 downto 0));
    port (
       -- Kria K26 I/O Ports
-      hda             : inout slv(19 downto 0);
+      pmod            : inout slv(7 downto 0);
       -- DMA Interfaces  (dmaClk domain)
       dmaClk          : in    sl;
       dmaRst          : in    sl;
@@ -62,9 +62,9 @@ architecture mapping of Application is
    signal axilWriteMasters : AxiLiteWriteMasterArray(NUM_AXIL_MASTERS_C-1 downto 0);
    signal axilWriteSlaves  : AxiLiteWriteSlaveArray(NUM_AXIL_MASTERS_C-1 downto 0) := (others => AXI_LITE_WRITE_SLAVE_EMPTY_DECERR_C);
 
-   signal hdaIn    : slv(19 downto 0) := (others => '1');
-   signal hdaOut   : slv(19 downto 0) := (others => '1');
-   signal hdaTri   : slv(19 downto 0) := (others => '1');
+   signal hdaIn    : slv(7 downto 0) := (others => '1');
+   signal hdaOut   : slv(7 downto 0) := (others => '1');
+   signal hdaTri   : slv(7 downto 0) := (others => '1');
    signal readReg  : slv(31 downto 0) := (others => '1');
    signal writeReg : Slv32Array(1 downto 0);
 
@@ -149,16 +149,16 @@ begin
          writeRegister   => writeReg,
          readRegister(0) => readReg);
 
-   readReg(19 downto 0) <= hdaIn;
-   hdaout               <= writeReg(0)(19 downto 0);
-   hdaTri               <= writeReg(1)(19 downto 0);
+   readReg(7 downto 0) <= hdaIn;
+   hdaout              <= writeReg(0)(7 downto 0);
+   hdaTri              <= writeReg(1)(7 downto 0);
 
-   GEN_VEC : for i in 19 downto 0 generate
+   GEN_VEC : for i in 7 downto 0 generate
       U_IOBUF : entity surf.IoBufWrapper
          port map (
             I  => hdaout(i),
             O  => hdaIn(i),
-            IO => hda(i),
+            IO => pmod(i),
             T  => hdaTri(i));
    end generate GEN_VEC;
 

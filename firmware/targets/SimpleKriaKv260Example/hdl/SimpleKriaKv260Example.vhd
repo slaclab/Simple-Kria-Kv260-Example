@@ -29,7 +29,7 @@ entity SimpleKriaKv260Example is
       BUILD_INFO_G : BuildInfoType);
    port (
       -- Kria K26 I/O Ports
-      hda        : inout slv(19 downto 0);
+      pmod       : inout slv(7 downto 0);
       -- PMU Ports
       fanEnableL : out   sl;
       -- SYSMON Ports
@@ -70,6 +70,9 @@ begin
          ------------------------
          --  Top Level Interfaces
          ------------------------
+         -- DSP Clock and Reset Monitoring
+         dspClk         => '0',
+         dspRst         => '0',
          -- AUX Clock and Reset
          auxClk         => axilClk,     -- 100 MHz
          auxRst         => axilRst,
@@ -102,7 +105,7 @@ begin
          AXIL_BASE_ADDR_G => APP_ADDR_OFFSET_C)
       port map (
          -- Kria K26 I/O Ports
-         hda             => hda,
+         pmod            => pmod,
          -- DMA Interfaces  (dmaClk domain)
          dmaClk          => dmaClk,
          dmaRst          => dmaRst,
