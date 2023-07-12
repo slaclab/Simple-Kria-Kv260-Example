@@ -66,9 +66,9 @@ if __name__ == "__main__":
         initRead    = args.initRead,
     ) as root:
         pyrogue.pydm.runPyDM(
-            root  = root,
-            sizeX = 800,
-            sizeY = 800,
+            serverList = root.zmqServer.address,
+            sizeX      = 800,
+            sizeY      = 800,
         )
 
     #################################################################

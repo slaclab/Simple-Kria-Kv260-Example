@@ -18,13 +18,21 @@ import pyrogue.utilities.prbs
 import axi_soc_ultra_plus_core   as socCore
 import simple_kria_kv260_example as rfsoc
 
+rogue.Version.minVersion('6.0.0')
+
 class Root(pr.Root):
     def __init__(self,
-            ip = '10.0.0.200', # ETH Host Name (or IP address)
-        **kwargs):
-
-        # Pass custom value to parent via super function
+            ip       = '10.0.0.200', # ETH Host Name (or IP address)
+            zmqSrvEn = True,  # Flag to include the ZMQ server
+            **kwargs):
         super().__init__(**kwargs)
+
+        #################################################################
+        if zmqSrvEn:
+            self.zmqServer = pyrogue.interfaces.ZmqServer(root=self, addr='*', port=0)
+            self.addInterface(self.zmqServer)
+
+        #################################################################
 
         #-----------------------------------------------------------------------------
 
