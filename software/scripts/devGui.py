@@ -27,32 +27,12 @@ if __name__ == "__main__":
     # Set the argument parser
     parser = argparse.ArgumentParser()
 
-    # Convert str to bool
-    argBool = lambda s: s.lower() in ['true', 't', 'yes', '1']
-
     # Add arguments
     parser.add_argument(
         "--ip",
         type     = str,
-        required = False,
-        default  = '10.0.0.10',
+        required = True,
         help     = "ETH Host Name (or IP address)",
-    )
-
-    parser.add_argument(
-        "--pollEn",
-        type     = argBool,
-        required = False,
-        default  = True,
-        help     = "Enable auto-polling",
-    )
-
-    parser.add_argument(
-        "--initRead",
-        type     = argBool,
-        required = False,
-        default  = True,
-        help     = "Enable read all variables at start",
     )
 
     # Get the arguments
@@ -61,9 +41,7 @@ if __name__ == "__main__":
     #################################################################
 
     with simple_kria_kv260_example.Root(
-        ip          = args.ip,
-        pollEn      = args.pollEn,
-        initRead    = args.initRead,
+        ip = args.ip,
     ) as root:
         pyrogue.pydm.runPyDM(
             serverList = root.zmqServer.address,
