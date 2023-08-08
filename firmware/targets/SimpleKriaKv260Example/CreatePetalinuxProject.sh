@@ -6,7 +6,7 @@
 hwType=XilinxKriaKv260
 
 # Define number of DMA lanes
-numLane=1
+numLane=2
 
 # Define number of DEST per DMA lane
 numDest=1

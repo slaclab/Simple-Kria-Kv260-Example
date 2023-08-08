@@ -28,6 +28,7 @@ Targets:
     Extensions:
       - petalinux.tar.gz
       - bit
+      - ltx
 
 Releases:
   KiraKv260:

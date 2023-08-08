@@ -39,7 +39,7 @@ end SimpleKriaKv260Example;
 
 architecture top_level of SimpleKriaKv260Example is
 
-   constant DMA_SIZE_C : positive := 1;
+   constant DMA_SIZE_C : positive := 2;
 
    signal dmaClk       : sl;
    signal dmaRst       : sl;
@@ -120,5 +120,27 @@ begin
          axilWriteSlave  => axilWriteSlave,
          axilReadMaster  => axilReadMaster,
          axilReadSlave   => axilReadSlave);
+
+   -------------
+   -- XVC Module
+   -------------
+   U_XVC : entity surf.DmaXvcWrapper
+      generic map (
+         TPD_G           => TPD_G,
+         AXIS_CLK_FREQ_G => 250.0E+6,
+         AXIS_CONFIG_G   => DMA_AXIS_CONFIG_C)
+      port map (
+         -- Clock and Reset (xvcClk domain)
+         xvcClk       => axilClk,
+         xvcRst       => axilRst,
+         -- Clock and Reset (axisClk domain)
+         axisClk      => dmaClk,
+         axisRst      => dmaRst,
+         -- OB FIFO (axisClk domain)
+         obFifoMaster => dmaObMasters(1),
+         obFifoSlave  => dmaObSlaves(1),
+         -- IB FIFO (axisClk domain)
+         ibFifoMaster => dmaIbMasters(1),
+         ibFifoSlave  => dmaIbSlaves(1));
 
 end top_level;

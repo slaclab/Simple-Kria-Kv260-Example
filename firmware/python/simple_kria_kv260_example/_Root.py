@@ -40,7 +40,17 @@ class Root(pr.Root):
         self.tcpMemBase = rogue.interfaces.memory.TcpClient(ip,9000)
 
         # DMA[lane=0][TDEST=0] = ports 10000 & 10001
-        self.tcpStream = stream.TcpClient(ip,10000)
+        self.dataStream = stream.TcpClient(ip,10000)
+
+        # DMA[lane=1][TDEST=0] = ports 10512 & 10513
+        self.xvcStream = stream.TcpClient(ip,10512)
+
+        # Create (Xilinx Virtual Cable) XVC on localhost
+        self.xvc = rogue.protocols.xilinx.Xvc( 2542 )
+        self.addProtocol( self.xvc )
+
+        # Connect DMA[lane=1][TDEST=0] to XVC
+        self.xvcStream == self.xvc
 
         #-----------------------------------------------------------------------------
 
@@ -48,7 +58,7 @@ class Root(pr.Root):
         self.add(socCore.AxiSocCore(
             memBase      = self.tcpMemBase,
             offset       = 0x04_0000_0000,
-            numDmaLanes  = 1,
+            numDmaLanes  = 2,
         ))
 
         self.add(rfsoc.Application(
@@ -64,14 +74,14 @@ class Root(pr.Root):
             checkPayload = True,
             expand       = True,
         )
-        self.tcpStream >> self.prbsRx
+        self.dataStream >> self.prbsRx
         self.add(self.prbsRx)
 
         self.prbTx = pr.utilities.prbs.PrbsTx(
             width   = 64,
             expand  = True,
         )
-        self.prbTx >> self.tcpStream
+        self.prbTx >> self.dataStream
         self.add(self.prbTx)
 
         #-----------------------------------------------------------------------------

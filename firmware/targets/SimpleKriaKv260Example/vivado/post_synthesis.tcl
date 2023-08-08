@@ -18,7 +18,7 @@ source -quiet $::env(RUCKUS_DIR)/vivado_proc.tcl
 # Bypass the debug chipscope generation via return cmd
 # ELSE ... comment out the return to include chipscope
 ######################################################
-return
+# return
 
 ############################
 ## Open the synthesis design
@@ -43,16 +43,21 @@ set_property C_DATA_DEPTH 1024 [get_debug_cores ${ilaName}]
 #################################
 ## Set the clock for the ILA core
 #################################
-SetDebugCoreClk ${ilaName} {U_App/U_DspCoreWrapper/dspClk}
+SetDebugCoreClk ${ilaName} {U_App/axilClk}
 
 #######################
 ## Set the debug Probes
 #######################
 
-ConfigProbe ${ilaName} {U_App/U_DspCoreWrapper/startRxMarker}
-ConfigProbe ${ilaName} {U_App/U_DspCoreWrapper/startTxMarker}
-ConfigProbe ${ilaName} {U_App/U_DspCoreWrapper/debugRXMarker}
-ConfigProbe ${ilaName} {U_App/U_DspCoreWrapper/debugTXMarker}
+ConfigProbe ${ilaName} {U_App/axilRst}
+ConfigProbe ${ilaName} {U_App/axilReadMaster[*}
+ConfigProbe ${ilaName} {U_App/axilReadSlave[*}
+ConfigProbe ${ilaName} {U_App/axilWriteMaster[*}
+ConfigProbe ${ilaName} {U_App/axilWriteSlave[*}
+ConfigProbe ${ilaName} {U_App/axilReadMasters[*}
+ConfigProbe ${ilaName} {U_App/axilReadSlaves[*}
+ConfigProbe ${ilaName} {U_App/axilWriteMasters[*}
+ConfigProbe ${ilaName} {U_App/axilWriteSlaves[*}
 
 ##########################
 ## Write the port map file
