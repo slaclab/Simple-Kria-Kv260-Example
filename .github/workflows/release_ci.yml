@@ -11,6 +11,7 @@
 # ----------------------------------------------------------------------------
 # The following environment variables are required for this process:
 # secrets.CONDA_UPLOAD_TOKEN_TAG
+# secrets.GH_TOKEN
 
 name: CI Workflow
 on: [push]
