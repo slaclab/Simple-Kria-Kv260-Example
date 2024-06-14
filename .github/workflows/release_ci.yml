@@ -12,83 +12,47 @@
 # The following environment variables are required for this process:
 # secrets.CONDA_UPLOAD_TOKEN_TAG
 
-name: Release Integration
+name: CI Workflow
 on: [push]
 
 jobs:
-  conda_build:
-    name: Anaconda Build
-    if: startsWith(github.ref, 'refs/tags/')
-    runs-on: ubuntu-20.04
+
+# ----------------------------------------------------------------------------
+
+  test_and_document:
+    name: Test And Generate Documentation
+    runs-on: ubuntu-22.04
     steps:
 
       # This step checks out a copy of your repository.
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v4
         with:
-          python-version: 3.8
+          python-version: 3.11
 
-      - name: Setup anaconda
-        env:
-          OS_NAME: ${{ matrix.os }}
-        run: |
-          cd ${HOME}
-          wget -O miniconda.sh https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
-          bash miniconda.sh -b -p ${HOME}/miniconda
-          export PATH="${HOME}/miniconda/bin:$PATH"
-          source ${HOME}/miniconda/etc/profile.d/conda.sh
-          conda config --set always_yes yes
-          conda config --set channel_priority strict
-          conda install -n base conda-libmamba-solver
-          conda config --set solver libmamba
-          conda install conda-build anaconda-client conda-verify
-          conda update -q conda conda-build
-          conda update --all
+# ----------------------------------------------------------------------------
 
-      - name: Get Image Information
-        id: get_image_info
-        env:
-          CONDA_UPLOAD_TOKEN_TAG: ${{ secrets.CONDA_UPLOAD_TOKEN_TAG }}
-          URL_BASE: https://github.com/${{ github.repository }}/releases/download
-        run: |
-          echo ::set-output name=token::$CONDA_UPLOAD_TOKEN_TAG
-          echo ::set-output name=url::${URL_BASE}/${GITHUB_REF#refs/tags/}/rogue_${GITHUB_REF#refs/tags/}.zip
-          echo ::set-output name=tag::${GITHUB_REF#refs/tags/}
-          echo ::set-output name=file::rogue_${GITHUB_REF#refs/tags/}.zip
+  gen_release:
+    needs: [test_and_document]
+    uses: slaclab/ruckus/.github/workflows/gen_release.yml@main
+    with:
+      version: '1.0.0'
+    secrets:
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
-      - name: Download And Extract
-        env:
-          GH_API: https://api.github.com
-          GH_REPO: https://api.github.com/repos/slaclab/Simple-Kria-Kv260-Example
-          AUTH: "Authorization: token ${{ secrets.GH_TOKEN }}"
-          WGET_ARGS: "--content-disposition --auth-no-challenge --no-cookie"
-          CURL_ARGS: "-LJO#"
-          FILENAME: ${{ steps.get_image_info.outputs.file }}
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: |
-          mkdir ${HOME}/download
-          cd ${HOME}/download
-          GH_TAGS=https://api.github.com/repos/slaclab/Simple-Kria-Kv260-Example/releases/tags/${GITHUB_REF#refs/tags/}
-          echo GH_TAGS = $GH_TAGS
-          echo curl -sH "$AUTH" $GH_TAGS
-          response=$(curl -sH "$AUTH" $GH_TAGS)
-          echo $response
-          eval $(echo "$response" | grep -C3 "name.:.\+${FILENAME}" | grep -w id | tr : = | tr -cd '[[:alnum:]]=')
-          echo $id
-          GH_ASSET="$GH_REPO/releases/assets/$id"
-          echo $GH_ASSET
-          echo curl $CURL_ARGS -H "Authorization: token ${GH_TOKEN}" -H 'Accept: application/octet-stream' "$GH_ASSET"
-          curl $CURL_ARGS -H "Authorization: token ${GH_TOKEN}" -H 'Accept: application/octet-stream' "$GH_ASSET"
-          unzip $FILENAME
+# ----------------------------------------------------------------------------
 
-      - name: Build And Upload
-        run: |
-          export PATH="${HOME}/miniconda/bin:$PATH"
-          source ${HOME}/miniconda/etc/profile.d/conda.sh
-          cd ${HOME}/download/
-          conda build --debug conda-recipe --output-folder bld-dir -c tidair-tag -c conda-forge
-          anaconda -t ${{ steps.get_image_info.outputs.token }} upload bld-dir/noarch/*.tar.bz2
+  conda_build_proj:
+    needs: [test_and_document]
+    uses: slaclab/ruckus/.github/workflows/conda_build_proj.yml@main
+    with:
+      version: '1.0.0'
+      gitub_repo: ${{ github.repository }}
+    secrets:
+      CONDA_UPLOAD_TOKEN_TAG: ${{ secrets.CONDA_UPLOAD_TOKEN_TAG }}
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
+# ----------------------------------------------------------------------------
