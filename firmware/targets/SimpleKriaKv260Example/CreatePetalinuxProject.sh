@@ -18,6 +18,9 @@ txBuffCnt=128
 # Define DMA Buffer Size
 buffSize=0x80000 # 512kB
 
+# Not using RFDC utility
+rfdc=0
+
 ####################################################
 
 if [ $# -ne 1 ]
@@ -43,4 +46,5 @@ buildPath=$basePath/build/petalinux
 # Execute the create petalinux script
 ../../submodules/axi-soc-ultra-plus-core/CreatePetalinuxProject.sh \
 -p $buildPath -n $targetName -x $xsaPath -h $hwType \
--l $numLane -d $numDest -t $txBuffCnt -r $rxBuffCnt -s $buffSize
+-l $numLane -d $numDest -t $txBuffCnt -r $rxBuffCnt -s $buffSize \
+-f $rfdc
