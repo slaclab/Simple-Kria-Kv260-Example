@@ -27,8 +27,6 @@ Targets:
     ImageDir: targets/SimpleKriaKv260Example/images
     Extensions:
       - petalinux.tar.gz
-      - bit
-      - ltx
 
 Releases:
   KiraKv260:
@@ -36,4 +34,4 @@ Releases:
     Targets:
       - SimpleKriaKv260Example
     Types:
-      - Rogue
+      - FW_Only
