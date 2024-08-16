@@ -55,7 +55,33 @@ architecture top_level of SimpleKriaKv260Example is
    signal axilWriteMaster : AxiLiteWriteMasterType;
    signal axilWriteSlave  : AxiLiteWriteSlaveType := AXI_LITE_WRITE_SLAVE_EMPTY_DECERR_C;
 
+   signal xvcClk156 : sl;
+   signal xvcRst156 : sl;
+
 begin
+
+   U_XVC_PLL : entity surf.ClockManagerUltraScale
+      generic map(
+         TPD_G              => TPD_G,
+         TYPE_G             => "MMCM",
+         INPUT_BUFG_G       => true,
+         FB_BUFG_G          => true,
+         RST_IN_POLARITY_G  => '1',
+         NUM_CLOCKS_G       => 1,
+         -- MMCM attributes
+         BANDWIDTH_G        => "OPTIMIZED",
+         CLKIN_PERIOD_G     => 10.0,    -- 100MHz
+         DIVCLK_DIVIDE_G    => 8,       -- 12.5MHz = 100MHz/8
+         CLKFBOUT_MULT_F_G  => 96.875,  -- 1210.9375MHz = 96.875 x 12.5MHz
+         CLKOUT0_DIVIDE_F_G => 7.75)    -- 156.25MHz = 1210.9375MHz/7.75
+      port map(
+         -- Clock Input
+         clkIn     => axilClk,
+         rstIn     => axilRst,
+         -- Clock Outputs
+         clkOut(0) => xvcClk156,
+         -- Reset Outputs
+         rstOut(0) => xvcRst156);
 
    -----------------------
    -- Common Platform Core
@@ -126,21 +152,18 @@ begin
    -------------
    U_XVC : entity surf.DmaXvcWrapper
       generic map (
-         TPD_G           => TPD_G,
-         AXIS_CLK_FREQ_G => 250.0E+6,
-         AXIS_CONFIG_G   => DMA_AXIS_CONFIG_C)
+         TPD_G             => TPD_G,
+         DMA_AXIS_CONFIG_G => DMA_AXIS_CONFIG_C)
       port map (
-         -- Clock and Reset (xvcClk domain)
-         xvcClk       => axilClk,
-         xvcRst       => axilRst,
-         -- Clock and Reset (axisClk domain)
-         axisClk      => dmaClk,
-         axisRst      => dmaRst,
-         -- OB FIFO (axisClk domain)
-         obFifoMaster => dmaObMasters(1),
-         obFifoSlave  => dmaObSlaves(1),
-         -- IB FIFO (axisClk domain)
-         ibFifoMaster => dmaIbMasters(1),
-         ibFifoSlave  => dmaIbSlaves(1));
+         -- 156.25MHz XVC Clock/Reset (xvcClk156 domain)
+         xvcClk156   => xvcClk156,
+         xvcRst156   => xvcRst156,
+         -- DMA Interface (dmaClk domain)
+         dmaClk      => dmaClk,
+         dmaRst      => dmaRst,
+         dmaObMaster => dmaObMasters(1),
+         dmaObSlave  => dmaObSlaves(1),
+         dmaIbMaster => dmaIbMasters(1),
+         dmaIbSlave  => dmaIbSlaves(1));
 
 end top_level;
