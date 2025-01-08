@@ -34,4 +34,4 @@ Releases:
     Targets:
       - SimpleKriaKv260Example
     Types:
-      - FW_Only
+      - Rogue
