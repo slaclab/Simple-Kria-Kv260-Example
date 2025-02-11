@@ -20,22 +20,6 @@ jobs:
 
 # ----------------------------------------------------------------------------
 
-  test_and_document:
-    name: Test And Generate Documentation
-    runs-on: ubuntu-22.04
-    steps:
-
-      # This step checks out a copy of your repository.
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - uses: actions/setup-python@v4
-        with:
-          python-version: 3.11
-
-# ----------------------------------------------------------------------------
-
   gen_release:
     needs: [test_and_document]
     uses: slaclab/ruckus/.github/workflows/gen_release.yml@main
