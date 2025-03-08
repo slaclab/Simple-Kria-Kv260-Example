@@ -18,7 +18,7 @@ import pyrogue.utilities.prbs
 import axi_soc_ultra_plus_core   as socCore
 import simple_kria_kv260_example as rfsoc
 
-rogue.Version.minVersion('6.0.0')
+rogue.Version.minVersion('6.5.0')
 
 class Root(pr.Root):
     def __init__(self,
