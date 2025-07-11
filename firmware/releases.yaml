@@ -10,28 +10,16 @@
 
 GitBase: ..
 
-TopRoguePackage: simple_kria_kv260_example
-
-RoguePackages:
-  - python
-
-CondaDependencies:
-  - surf
-  - axi_soc_ultra_plus_core
-
-RogueScripts:
-  - ../software/scripts/kv260Gui
-
 Targets:
   SimpleKriaKv260Example:
     ImageDir: targets/SimpleKriaKv260Example/images
     Extensions:
-      - petalinux.tar.gz
+      - linux.tar.gz
 
 Releases:
-  KiraKv260:
+  all:
     Primary: True
     Targets:
       - SimpleKriaKv260Example
     Types:
-      - Rogue
+      - Yocto
