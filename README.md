@@ -128,6 +128,24 @@ ssh root@10.0.0.10 '/bin/sync; /sbin/reboot'
 
 <!--- ######################################################## -->
 
+# How to remote update the Linux image
+
+- Assumes the DHCP IP address is 10.0.0.10
+
+1) Using "scp" to copy over your Linux images to the /boot partition on the SD memory card. Here's an example:
+
+```bash
+scp build/YoctoProjects/SimpleKriaKv260Example/linux/* root@10.0.0.10:/boot/
+```
+
+2) Send a "sync" and "reboot" command to the device to load new firmware:  Here's an example:
+
+```bash
+ssh root@10.0.0.10 '/bin/sync; /sbin/reboot'
+```
+
+<!--- ######################################################## -->
+
 # How to install the Rogue With miniforge
 
 > https://slaclab.github.io/rogue/installing/miniforge.html
