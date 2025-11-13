@@ -44,8 +44,8 @@ $ ls -lath SimpleKriaKv260Example/images/
 total 47M
 drwxr-xr-x 5 ruckman re 2.0K Feb  7 07:13 ..
 drwxr-xr-x 2 ruckman re 2.0K Feb  4 21:15 .
--rw-r--r-- 1 ruckman re  14M Feb  4 21:15 SimpleKriaKv260Example-0x03000000-20250710093359-ruckman-XXXXXXX.xsa
--rw-r--r-- 1 ruckman re  33M Feb  4 21:14 SimpleKriaKv260Example-0x03000000-20250710093359-ruckman-XXXXXXX.bit
+-rw-r--r-- 1 ruckman re  14M Feb  4 21:15 SimpleKriaKv260Example-xxxxxxxxxx-yyyyyyy-user-zzzzzzz.xsa
+-rw-r--r-- 1 ruckman re  33M Feb  4 21:14 SimpleKriaKv260Example-xxxxxxxxxx-yyyyyyy-user-zzzzzzz.bit
 ```
 
 <!--- ######################################################## -->
@@ -54,7 +54,7 @@ drwxr-xr-x 2 ruckman re 2.0K Feb  4 21:15 .
 
 1) Generate the .bit and .xsa files (refer to `How to generate the SOC .BIT and .XSA files` instructions).
 
-2) Setup Xilinx PATH and licensing (if on SLAC AFS network) else requires Vivado install and licensing on your local machine
+2) Setup Xilinx PATH and licensing (if on SLAC SDF network) else requires Vivado install and licensing on your local machine
 
 ```bash
 $ source Simple-Kria-Kv260-Example/firmware/setup_env_slac.sh
@@ -64,7 +64,7 @@ $ source Simple-Kria-Kv260-Example/firmware/setup_env_slac.sh
 
 ```bash
 $ cd Simple-Kria-Kv260-Example/firmware/targets/SimpleKriaKv260Example/
-$ source BuildYoctoProject.sh images/SimpleKriaKv260Example-0x03000000-20250710093359-ruckman-XXXXXXX.xsa
+$ ./BuildYoctoProject.sh -c -f images/SimpleKriaKv260Example-xxxxxxxxxx-yyyyyyy-user-zzzzzzz.xsa
 ```
 
 <!--- ######################################################## -->
@@ -117,7 +117,7 @@ MODE2_C0M = R165 = 499 Ohm (default)
 1) Using "scp" to copy your .bit file to the SD memory card on the RFSoC.  Here's an example:
 
 ```bash
-scp SimpleKriaKv260Example-0x03000000-20250710093359-ruckman-XXXXXXX.bit root@10.0.0.10:/boot/system.bit
+scp SimpleKriaKv260Example-xxxxxxxxxx-yyyyyyy-user-zzzzzzz.bit root@10.0.0.10:/boot/system.bit
 ```
 
 2) Send a "sync" and "reboot" command to the RFSoC to load new firmware:  Here's an example:
@@ -156,7 +156,7 @@ ssh root@10.0.0.10 '/bin/sync; /sbin/reboot'
 
 - Assumes the DHCP assigned IP address is 10.0.0.10
 
-1) Setup the rogue environment (if on SLAC AFS network) else install rogue (recommend miniforge method) on your local machine
+1) Setup the rogue environment (if on SLAC SDF network) else install rogue (recommend miniforge method) on your local machine
 
 ```bash
 $ source Simple-Kria-Kv260-Example/software/setup_env_slac.sh
