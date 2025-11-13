@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 ####################################################
 
 # Define the hardware type
@@ -26,7 +25,6 @@ function show_help {
    echo " -f xsa   - Path to XSA file"
    echo " -e       - Activate env and cd to build dir"
    echo " -c       - Force reconfigure"
-   exit 1
 }
 
 while getopts "cef:h" flag
@@ -42,6 +40,7 @@ done
 if [ -z "${file}" ]
 then
    show_help
+   return 1 2>/dev/null || exit 1
 fi
 
 # Define the target name
