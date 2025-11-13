@@ -60,11 +60,11 @@ drwxr-xr-x 2 ruckman re 2.0K Feb  4 21:15 .
 $ source Simple-Kria-Kv260-Example/firmware/setup_env_slac.sh
 ```
 
-3) Go to the target directory and run the `BuildYoctoProject.sh` script with arg pointing to path of .XSA file:
+3) Go to the target directory and execute the `BuildYoctoProject` script with arg pointing to path of .XSA file:
 
 ```bash
 $ cd Simple-Kria-Kv260-Example/firmware/targets/SimpleKriaKv260Example/
-$ ./BuildYoctoProject.sh -c -f images/SimpleKriaKv260Example-xxxxxxxxxx-yyyyyyy-user-zzzzzzz.xsa
+$ ./BuildYoctoProject -c -f images/SimpleKriaKv260Example-xxxxxxxxxx-yyyyyyy-user-zzzzzzz.xsa
 ```
 
 <!--- ######################################################## -->
