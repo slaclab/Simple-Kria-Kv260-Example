@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 ####################################################
 
 # Define the hardware type
