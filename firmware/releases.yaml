@@ -15,11 +15,16 @@ Targets:
     ImageDir: targets/SimpleKriaKv260Example/images
     Extensions:
       - linux.tar.gz
+  SimpleKriaKv260DmaLoopback:
+    ImageDir: targets/SimpleKriaKv260DmaLoopback/images
+    Extensions:
+      - linux.tar.gz
 
 Releases:
   all:
     Primary: True
     Targets:
       - SimpleKriaKv260Example
+      - SimpleKriaKv260DmaLoopback
     Types:
       - Yocto
