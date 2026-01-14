@@ -57,18 +57,44 @@ architecture mapping of Application is
 
    constant AXIL_CONFIG_C : AxiLiteCrossbarMasterConfigArray(NUM_AXIL_MASTERS_C-1 downto 0) := genAxiLiteConfig(NUM_AXIL_MASTERS_C, AXIL_BASE_ADDR_G, 20, 16);
 
+   signal writeMaster : AxiLiteWriteMasterType;
+   signal writeSlave  : AxiLiteWriteSlaveType;
+   signal readMaster  : AxiLiteReadMasterType;
+   signal readSlave   : AxiLiteReadSlaveType;
+
    signal axilReadMasters  : AxiLiteReadMasterArray(NUM_AXIL_MASTERS_C-1 downto 0);
    signal axilReadSlaves   : AxiLiteReadSlaveArray(NUM_AXIL_MASTERS_C-1 downto 0)  := (others => AXI_LITE_READ_SLAVE_EMPTY_DECERR_C);
    signal axilWriteMasters : AxiLiteWriteMasterArray(NUM_AXIL_MASTERS_C-1 downto 0);
    signal axilWriteSlaves  : AxiLiteWriteSlaveArray(NUM_AXIL_MASTERS_C-1 downto 0) := (others => AXI_LITE_WRITE_SLAVE_EMPTY_DECERR_C);
 
-   signal hdaIn    : slv(7 downto 0) := (others => '1');
-   signal hdaOut   : slv(7 downto 0) := (others => '1');
-   signal hdaTri   : slv(7 downto 0) := (others => '1');
+   signal hdaIn    : slv(7 downto 0)  := (others => '1');
+   signal hdaOut   : slv(7 downto 0)  := (others => '1');
+   signal hdaTri   : slv(7 downto 0)  := (others => '1');
    signal readReg  : slv(31 downto 0) := (others => '1');
    signal writeReg : Slv32Array(1 downto 0);
 
 begin
+
+   U_AxiLiteAsync : entity surf.AxiLiteAsync
+      generic map (
+         TPD_G           => TPD_G,
+         COMMON_CLK_G    => false,
+         NUM_ADDR_BITS_G => 32)
+      port map (
+         -- Slave Interface
+         sAxiClk         => axilClk,
+         sAxiClkRst      => axilRst,
+         sAxiReadMaster  => axilReadMaster,
+         sAxiReadSlave   => axilReadSlave,
+         sAxiWriteMaster => axilWriteMaster,
+         sAxiWriteSlave  => axilWriteSlave,
+         -- Master Interface
+         mAxiClk         => dmaClk,
+         mAxiClkRst      => dmaRst,
+         mAxiReadMaster  => readMaster,
+         mAxiReadSlave   => readSlave,
+         mAxiWriteMaster => writeMaster,
+         mAxiWriteSlave  => writeSlave);
 
    U_XBAR : entity surf.AxiLiteCrossbar
       generic map (
@@ -77,12 +103,12 @@ begin
          NUM_MASTER_SLOTS_G => NUM_AXIL_MASTERS_C,
          MASTERS_CONFIG_G   => AXIL_CONFIG_C)
       port map (
-         axiClk              => axilClk,
-         axiClkRst           => axilRst,
-         sAxiWriteMasters(0) => axilWriteMaster,
-         sAxiWriteSlaves(0)  => axilWriteSlave,
-         sAxiReadMasters(0)  => axilReadMaster,
-         sAxiReadSlaves(0)   => axilReadSlave,
+         axiClk              => dmaClk,
+         axiClkRst           => dmaRst,
+         sAxiWriteMasters(0) => writeMaster,
+         sAxiWriteSlaves(0)  => writeSlave,
+         sAxiReadMasters(0)  => readMaster,
+         sAxiReadSlaves(0)   => readSlave,
          mAxiWriteMasters    => axilWriteMasters,
          mAxiWriteSlaves     => axilWriteSlaves,
          mAxiReadMasters     => axilReadMasters,
@@ -91,7 +117,7 @@ begin
    U_SsiPrbsTx : entity surf.SsiPrbsTx
       generic map (
          TPD_G                      => TPD_G,
-         PRBS_SEED_SIZE_G           => 64,
+         PRBS_SEED_SIZE_G           => 128,
          VALID_THOLD_G              => 1,
          VALID_BURST_MODE_G         => false,
          MASTER_AXI_PIPE_STAGES_G   => 1,
@@ -103,8 +129,8 @@ begin
          mAxisMaster     => dmaIbMaster,
          mAxisSlave      => dmaIbSlave,
          -- Trigger Signal (locClk domain)
-         locClk          => axilClk,
-         locRst          => axilRst,
+         locClk          => dmaClk,
+         locRst          => dmaRst,
          trig            => '0',
          packetLength    => x"0000_0FFF",
          -- Optional: Axi-Lite Register Interface (locClk domain)
@@ -116,7 +142,7 @@ begin
    U_SsiPrbsRx : entity surf.SsiPrbsRx
       generic map (
          TPD_G                     => TPD_G,
-         PRBS_SEED_SIZE_G          => 64,
+         PRBS_SEED_SIZE_G          => 128,
          SLAVE_AXI_PIPE_STAGES_G   => 1,
          SLAVE_AXI_STREAM_CONFIG_G => DMA_AXIS_CONFIG_C)
       port map (
@@ -124,8 +150,8 @@ begin
          sAxisRst       => dmaRst,
          sAxisMaster    => dmaObMaster,
          sAxisSlave     => dmaObSlave,
-         axiClk         => axilClk,
-         axiRst         => axilRst,
+         axiClk         => dmaClk,
+         axiRst         => dmaRst,
          axiReadMaster  => axilReadMasters(PRBS_RX_C),
          axiReadSlave   => axilReadSlaves(PRBS_RX_C),
          axiWriteMaster => axilWriteMasters(PRBS_RX_C),
@@ -139,8 +165,8 @@ begin
          NUM_READ_REG_G  => 1)
       port map (
          -- AXI-Lite Bus
-         axiClk          => axilClk,
-         axiClkRst       => axilRst,
+         axiClk          => dmaClk,
+         axiClkRst       => dmaRst,
          axiReadMaster   => axilReadMasters(HDA_IO_C),
          axiReadSlave    => axilReadSlaves(HDA_IO_C),
          axiWriteMaster  => axilWriteMasters(HDA_IO_C),

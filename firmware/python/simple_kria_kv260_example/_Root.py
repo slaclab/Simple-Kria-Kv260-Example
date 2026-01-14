@@ -70,7 +70,7 @@ class Root(pr.Root):
         #-----------------------------------------------------------------------------
 
         self.prbsRx    = pr.utilities.prbs.PrbsRx(
-            width        = 64,
+            width        = 128,
             checkPayload = True,
             expand       = True,
         )
@@ -78,7 +78,7 @@ class Root(pr.Root):
         self.add(self.prbsRx)
 
         self.prbTx = pr.utilities.prbs.PrbsTx(
-            width   = 64,
+            width   = 128,
             expand  = True,
         )
         self.prbTx >> self.dataStream
