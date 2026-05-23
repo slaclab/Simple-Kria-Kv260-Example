@@ -67,3 +67,4 @@ linux*
 .planning/
 planning/
 CLAUDE.md
+.venv-docs/

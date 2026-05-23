@@ -1,172 +1,18 @@
 # Simple-Kria-Kv260-Example
 
-<!--- ######################################################## -->
+Reference application for the SLAC SoC platform on the Xilinx Kria KV260 starter kit (`xck26-sfvc784-2lv-c`).
 
-# Clone the GIT repository 
+**Application docs:** https://slaclab.github.io/Simple-Kria-Kv260-Example/
 
-Install git large filesystems (git-lfs) in your .gitconfig (1-time step per unix environment)
-```bash
-$ git lfs install
-```
-Clone the git repo with git-lfs enabled
-```bash
-$ git clone --recursive https://github.com/slaclab/Simple-Kria-Kv260-Example.git
-```
-Note: `recursive flag` used to initialize all submodules within the clone
+**Shared workflow docs (clone, FW build, Yocto, SD card, Rogue install/launch, remote bitstream update):** https://slaclab.github.io/axi-soc-ultra-plus-core/
 
-<!--- ######################################################## -->
+## Board-specific deltas
 
-# How to generate the SOC .BIT and .XSA files
+- **Target directory:** `firmware/targets/SimpleKriaKv260Example/`
+- **Default DHCP IP convention:** `10.0.0.10` (used in remote-update and GUI launch examples on the docs site)
+- **Board:** Xilinx Kria KV260 Vision AI Starter Kit (Kria K26 SOM); FPGA part: `xck26-sfvc784-2lv-c`; firmware version: `v3.3.0.0` (`PRJ_VERSION = 0x03030000`)
+- **Conda env (SLAC AFS):** `rogue_v6.9.0`
+- **Kria-specific Yocto notes:** Kria Yocto build requires the `-c` clean flag: `./BuildYoctoProject -c -f images/<TargetName>-<PRJ_VERSION>-<timestamp>-<user>-<sha>.xsa`
+- **SD boot mode (resistor-based MODE pins):** `MODE3_C2M=R162=open`, `MODE2_C2M=R163=open`, `MODE1_C2M=R164=open (default)`, `MODE0_C2M=R165=499Ω (default)` for `MODE[3:0]_C2M=0b1110`. Reference image:
 
-1) Setup Xilinx PATH and licensing (if on SLAC AFS network) else requires Vivado install and licensing on your local machine
-
-```bash
-$ source Simple-Kria-Kv260-Example/firmware/setup_env_slac.sh
-```
-
-2) Go to the target directory and make the firmware:
-
-```bash
-$ cd Simple-Kria-Kv260-Example/firmware/targets/SimpleKriaKv260Example/
-$ make
-```
-
-3) Optional: Review the results in GUI mode
-
-```bash
-$ make gui
-```
-
-The .bit and .XSA files are dumped into the SimpleKriaKv260Example/image directory:
-
-```bash
-$ ls -lath SimpleKriaKv260Example/images/
-total 47M
-drwxr-xr-x 5 ruckman re 2.0K Feb  7 07:13 ..
-drwxr-xr-x 2 ruckman re 2.0K Feb  4 21:15 .
--rw-r--r-- 1 ruckman re  14M Feb  4 21:15 SimpleKriaKv260Example-xxxxxxxxxx-yyyyyyy-user-zzzzzzz.xsa
--rw-r--r-- 1 ruckman re  33M Feb  4 21:14 SimpleKriaKv260Example-xxxxxxxxxx-yyyyyyy-user-zzzzzzz.bit
-```
-
-<!--- ######################################################## -->
-
-# How to build Yocto Linux images
-
-1) Generate the .bit and .xsa files (refer to `How to generate the SOC .BIT and .XSA files` instructions).
-
-2) Setup Xilinx PATH and licensing (if on SLAC SDF network) else requires Vivado install and licensing on your local machine
-
-```bash
-$ source Simple-Kria-Kv260-Example/firmware/setup_env_slac.sh
-```
-
-3) Go to the target directory and execute the `BuildYoctoProject` script with arg pointing to path of .XSA file:
-
-```bash
-$ cd Simple-Kria-Kv260-Example/firmware/targets/SimpleKriaKv260Example/
-$ ./BuildYoctoProject -c -f images/SimpleKriaKv260Example-xxxxxxxxxx-yyyyyyy-user-zzzzzzz.xsa
-```
-
-<!--- ######################################################## -->
-
-# How to make the SD memory card for the first time
-
-1) Creating Two Partitions.  Refer to URL below
-
-https://xilinx-wiki.atlassian.net/wiki/x/EYMfAQ
-
-2) Copy For the boot images, simply copy the files to the FAT partition.
-This typically will include system.bit, BOOT.BIN, image.ub, and boot.scr.  Here's an example:
-
-Note: Assumes SD memory FAT32 is `/dev/sde1` in instructions below
-
-```bash
-sudo mkdir -p boot
-sudo mount /dev/sde1 boot
-sudo cp Simple-Kria-Kv260-Example/firmware/build/YoctoProjects/SimpleKriaKv260Example/images/linux/system.bit boot/.
-sudo cp Simple-Kria-Kv260-Example/firmware/build/YoctoProjects/SimpleKriaKv260Example/images/linux/BOOT.BIN   boot/.
-sudo cp Simple-Kria-Kv260-Example/firmware/build/YoctoProjects/SimpleKriaKv260Example/images/linux/image.ub   boot/.
-sudo cp Simple-Kria-Kv260-Example/firmware/build/YoctoProjects/SimpleKriaKv260Example/images/linux/boot.scr   boot/.
-sudo sync boot/
-sudo umount boot
-```
-
-3) Power down the KV260 board
-
-4) Confirm that MODE[3:0]_C2M = b"1110" for SD-memory boot mode (non-default loading)
-
-```
-MODE3_C2M = R162 = open (remove resistor)
-MODE2_C2M = R163 = open (remove resistor)
-MODE2_C1M = R164 = open (default)
-MODE2_C0M = R165 = 499 Ohm (default)
-```
-
-<img src="docs/images/KV260_SD_BOOT.png" width="200">
-
-5) Power up the KV260 board
-
-6) Confirm that you can ping the boot after it boots up
-
-<!--- ######################################################## -->
-
-# How to remote update the firmware bitstream
-
-- Assumes the DHCP assigned IP address is 10.0.0.10
-
-1) Using "scp" to copy your .bit file to the SD memory card on the RFSoC.  Here's an example:
-
-```bash
-scp SimpleKriaKv260Example-xxxxxxxxxx-yyyyyyy-user-zzzzzzz.bit root@10.0.0.10:/boot/system.bit
-```
-
-2) Send a "sync" and "reboot" command to the RFSoC to load new firmware:  Here's an example:
-
-```bash
-ssh root@10.0.0.10 '/bin/sync; /sbin/reboot'
-```
-
-<!--- ######################################################## -->
-
-# How to remote update the Linux image
-
-- Assumes the DHCP IP address is 10.0.0.10
-
-1) Using "scp" to copy over your Linux images to the /boot partition on the SD memory card. Here's an example:
-
-```bash
-scp build/YoctoProjects/SimpleKriaKv260Example/linux/* root@10.0.0.10:/boot/
-```
-
-2) Send a "sync" and "reboot" command to the device to load new firmware:  Here's an example:
-
-```bash
-ssh root@10.0.0.10 '/bin/sync; /sbin/reboot'
-```
-
-<!--- ######################################################## -->
-
-# How to install the Rogue With miniforge
-
-> https://slaclab.github.io/rogue/installing/miniforge.html
-
-<!--- ######################################################## -->
-
-# How to run the Rogue GUI
-
-- Assumes the DHCP assigned IP address is 10.0.0.10
-
-1) Setup the rogue environment (if on SLAC SDF network) else install rogue (recommend miniforge method) on your local machine
-
-```bash
-$ source Simple-Kria-Kv260-Example/software/setup_env_slac.sh
-```
-
-2) Go to software directory and lauch the GUI:
-
-```bash
-$ cd Simple-Kria-Kv260-Example/software
-$ python scripts/devGui.py --ip 10.0.0.10
-```
-
-<!--- ######################################################## -->
+  <img src="docs/images/KV260_SD_BOOT.png" width="200">
