@@ -45,15 +45,3 @@ jobs:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
 # ----------------------------------------------------------------------------
-
-  conda_build_proj:
-    needs: [test_and_document]
-    uses: slaclab/ruckus/.github/workflows/conda_build_proj.yml@main
-    with:
-      version: '1.0.0'
-      gitub_repo: ${{ github.repository }}
-    secrets:
-      CONDA_UPLOAD_TOKEN_TAG: ${{ secrets.CONDA_UPLOAD_TOKEN_TAG }}
-      GH_TOKEN: ${{ secrets.GH_TOKEN }}
-
-# ----------------------------------------------------------------------------
