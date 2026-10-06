@@ -7,7 +7,7 @@ on the Kria K26 SOM (``xck26-sfvc784-2lv-c``). It is built on the SLAC
 The design validates DMA throughput and I/O connectivity, not signal processing.
 
 For the full platform-level architecture (DMA engine, AXI-Lite bridge,
-PS-PL interface, software stack) see :hub:`explanation/architecture.html`.
+PS-PL interface, software stack), see :hub:`explanation/architecture.html`.
 
 
 Topology
@@ -35,14 +35,14 @@ in the top-level VHDL architecture body (no ``AppPkg.vhd``). See
 :doc:`../reference/rtl_top_entity` and :doc:`../reference/register_map`.
 
 
-Clock domain
-------------
+Clock domains
+-------------
 
 The design runs in two functional clock domains, both sourced from
 ``AxiSocUltraPlusCore``:
 
-- ``axilClk`` (100 MHz) — AXI-Lite register access from the PS.
-- ``dmaClk`` (250 MHz) — DMA engine and application datapath crossbar.
+- ``axilClk`` (100 MHz): AXI-Lite register access from the PS.
+- ``dmaClk`` (250 MHz): DMA engine and application datapath crossbar.
 
 The ``Application`` entity bridges these two domains with
 ``surf.AxiLiteAsync`` before the internal crossbar. A third derived clock
@@ -50,7 +50,7 @@ The ``Application`` entity bridges these two domains with
 from the functional paths by an asynchronous clock group constraint in the
 XDC.
 
-No separate DSP or ADC converter clock is present — no signal-processing
-logic is instantiated in this design. The platform-level multi-domain clock
+No separate DSP or ADC converter clock is present, because no
+signal-processing logic is instantiated in this design. The platform-level multi-domain clock
 pattern (described at :hub:`explanation/architecture.html#clock-domains`)
 does not apply here; only the AXI-Lite and DMA clocks are used.
