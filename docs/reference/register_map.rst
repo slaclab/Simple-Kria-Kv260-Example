@@ -44,13 +44,13 @@ The three slave indices are:
      - Slave
    * - ``PRBS_TX_C``
      - ``0``
-     - ``SsiPrbsTx`` — PRBS transmit generator. Drives DMA inbound lane 0.
+     - ``SsiPrbsTx``: PRBS transmit generator. Drives DMA inbound lane 0.
    * - ``PRBS_RX_C``
      - ``1``
-     - ``SsiPrbsRx`` — PRBS receive checker. Consumes DMA outbound lane 0.
+     - ``SsiPrbsRx``: PRBS receive checker. Consumes DMA outbound lane 0.
    * - ``HDA_IO_C``
      - ``2``
-     - ``AxiLiteRegs`` — HDA I/O register block. Exposes ``pmod`` pin
+     - ``AxiLiteRegs``: HDA I/O register block. Exposes ``pmod`` pin
        input / output / tristate control via 8-bit registers.
 
 This is a PRBS loopback and HDA I/O test design; it does not include a
@@ -61,4 +61,4 @@ Pattern: genAxiLiteConfig
 --------------------------
 
 For the full ``genAxiLiteConfig`` crossbar pattern used across the SLAC SoC
-platform see :hub:`reference/register_map.html`.
+platform, see :hub:`reference/register_map.html`.

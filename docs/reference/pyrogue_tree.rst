@@ -12,24 +12,24 @@ Hierarchy
 
 - ``Root`` (:repo:`firmware/python/simple_kria_kv260_example/_Root.py`)
 
-  - ``AxiSocCore`` — platform core device at offset ``0x04_0000_0000``
+  - ``AxiSocCore``: platform core device at offset ``0x04_0000_0000``
     (``socCore.AxiSocCore``)
-  - ``Application`` — application device at offset ``0x04_8000_0000``
+  - ``Application``: application device at offset ``0x04_8000_0000``
     (:repo:`firmware/python/simple_kria_kv260_example/_Application.py`)
 
-    - ``SsiPrbsTx`` — PRBS transmit generator at offset ``0x0_0000``
+    - ``SsiPrbsTx``: PRBS transmit generator at offset ``0x0_0000``
       (``surf.protocols.ssi.SsiPrbsTx``)
-    - ``SsiPrbsRx`` — PRBS receive checker at offset ``0x1_0000``
+    - ``SsiPrbsRx``: PRBS receive checker at offset ``0x1_0000``
       (``surf.protocols.ssi.SsiPrbsRx``)
-    - ``HdaInputBus`` — HDA input bus read register at offset ``0x2_0000``
+    - ``HdaInputBus``: HDA input bus read register at offset ``0x2_0000``
       (``pr.RemoteVariable``, read-only, polled every 1 s)
-    - ``HdaOutputBus`` — HDA output bus write register at offset ``0x2_0100``
+    - ``HdaOutputBus``: HDA output bus write register at offset ``0x2_0100``
       (``pr.RemoteVariable``, read/write)
-    - ``HdaTriBus`` — HDA tristate control register at offset ``0x2_0104``
+    - ``HdaTriBus``: HDA tristate control register at offset ``0x2_0104``
       (``pr.RemoteVariable``, read/write)
-  - ``prbsRx`` — software-side PRBS checker (``pyrogue.utilities.prbs.PrbsRx``,
+  - ``prbsRx``: software-side PRBS checker (``pyrogue.utilities.prbs.PrbsRx``,
     128-bit, connected to DMA TCP stream port 10000)
-  - ``prbTx`` — software-side PRBS generator (``pyrogue.utilities.prbs.PrbsTx``,
+  - ``prbTx``: software-side PRBS generator (``pyrogue.utilities.prbs.PrbsTx``,
     128-bit, connected to DMA TCP stream port 10000)
 
 
@@ -60,4 +60,4 @@ Startup sequence
 - Connects the data stream to the software-side ``prbsRx`` and ``prbTx``
   objects for host-driven PRBS loopback testing.
 
-For the PyRogue API reference see :hub:`reference/pyrogue_api.html`.
+For the PyRogue API reference, see :hub:`reference/pyrogue_api.html`.

@@ -17,7 +17,7 @@ and host-package prerequisites.
 
 .. note::
 
-   Per-board build verification was not performed in this iteration; toolchain
+   Per-board build verification was not performed in this iteration; the toolchain
    matches the platform reference environment.
 
 
@@ -41,7 +41,7 @@ Change to the target directory and invoke ``make``:
    cd Simple-Kria-Kv260-Example/firmware/targets/SimpleKriaKv260Example/
    make
 
-For the shared Vivado build narrative see
+For the shared Vivado build narrative, see
 :hub:`tutorial/first_soc_bringup.html#firmware-build`.
 
 The build produces a ``.bit`` and a ``.xsa`` file in
@@ -64,7 +64,7 @@ requires the ``-c`` clean flag:
    ./BuildYoctoProject -c -f images/<TargetName>-<PRJ_VERSION>-<YYYYMMDDHHMMSS>-<user>-<git-short-SHA>.xsa
 
 For the shared Yocto build narrative (bare-metal vs Docker, build-output
-redirection, host-package prerequisites) see
+redirection, host-package prerequisites), see
 :hub:`tutorial/first_soc_bringup.html#yocto-build`.
 
 
@@ -87,5 +87,5 @@ the boot mode. For SD-card boot, the MODE pins must be configured as
 - ``MODE1_C2M = R164 = open (default)``
 - ``MODE0_C2M = R165 = 499 Ohm (default)``
 
-For the remaining boot and verification steps see
+For the remaining boot and verification steps, see
 :hub:`tutorial/first_soc_bringup.html#boot`.

@@ -28,5 +28,5 @@ The following constant is declared in the ``top_level`` architecture of
        (Xilinx Virtual Cable) debug stream.
 
 
-For platform-level constants (AXI Stream bus widths, DMA engine parameters)
-see the :hub:`reference/index.html` on the platform docs site.
+For platform-level constants (AXI Stream bus widths, DMA engine parameters),
+see the :hub:`reference index <reference/index.html>` on the platform docs site.

@@ -17,8 +17,9 @@ class Application(pr.Device):
         super().__init__(**kwargs)
 
         self.add(ssi.SsiPrbsTx(
-            offset  = 0x0_0000,
-            expand  = True,
+            offset     = 0x0_0000,
+            clock_freq = 250e6, # DMA clock being used
+            expand     = True,
         ))
 
         self.add(ssi.SsiPrbsRx(
